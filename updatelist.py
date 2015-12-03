@@ -30,22 +30,38 @@ def update_list():
 		page_scrapper(i)
 
 
-def getAlist(page):
-	with open('AnimeList.txt', 'r') as content_file:
-		content = content_file.read()
-	contentarr=content.split('|')
-	count=1
+def getListAnime(count1,contentarr,page):
+	count=count1
 	name_list=[]
 	new_content=json.loads(contentarr[page-1])
 	for name,link in new_content.iteritems():
 		print str(count)+". "+name[name.index('\n')+1:]
 		name_list.append(name)
 		count=count+1
-	l=raw_input("Enter comma separated list: ")
-	l2=l.split(',')
-	with open("fav.txt", "a") as text_file:
-		for n in l2:
-			text_file.write(name_list[int(n)-1]+'|')
+	return count,name_list
+
+
+def getAlist():
+	with open('AnimeList.txt', 'r') as content_file:
+		content = content_file.read()
+	contentarr=content.split('|')
+	page=1
+	count=1
+	name_list=[]
+	while(1):
+		count,name_list=getListAnime(count,contentarr,page)
+		l=raw_input("Enter comma separated list or press 'n' for next page or 'x' for exit ")
+		if l == 'n':
+			if(page+1 < len(contentarr)):
+				page=page+1
+			continue
+		elif l == 'x':
+			break
+		else:
+			l2=l.split(',')
+			with open("fav.txt", "a") as text_file:
+				for n in l2:
+					text_file.write(name_list[int(n)-1]+'|')
 
 
 
